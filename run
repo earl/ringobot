@@ -1,0 +1,2 @@
+#!/bin/bash
+exec ringo bot.js logs/ irc.freenode.net "#ringojs" ringostarr &
