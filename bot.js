@@ -13,7 +13,7 @@ function LogBot(logdir) {
 
     function append(record) {
         record['datetime'] = isodatetime();
-        fs.write(logname(), JSON.stringify(record), {append: true});
+        fs.write(logname(), JSON.stringify(record) + '\n', {append: true});
     }
 
     return new JavaAdapter(org.jibble.pircbot.PircBot, {
