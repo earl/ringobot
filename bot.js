@@ -7,30 +7,13 @@ require('core/json');
 import('fs');
 
 function LogBot(logdir) {
-    var currentLogName;
-    var log;
-
     function isodate()      (new Date()).format('yyyy-MM-dd');
     function isodatetime()  (new Date()).format('yyyy-MM-dd HH:mm:ss');
-    function logName()      fs.join(logdir, isodate() + '.log');
-
-    function openLog() {
-        var nextLogName = logName();
-        if (currentLogName != nextLogName) {
-            if (log) {
-                log.flush();
-                log.close();
-            }
-            currentLogName = nextLogName;
-            log = fs.open(currentLogName, {append: true});
-        }
-    }
+    function logname()      fs.join(logdir, isodate() + '.log');
 
     function append(record) {
-        openLog();
         record['datetime'] = isodatetime();
-        log.writeLine(JSON.stringify(record));
-        log.flush();
+        fs.write(logname(), JSON.stringify(record), {append: true});
     }
 
     return new JavaAdapter(org.jibble.pircbot.PircBot, {
