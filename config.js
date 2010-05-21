@@ -8,6 +8,10 @@ exports.botConfig = {
     name: 'abbot',
 };
 
+exports.webhookConfig = {
+    github: {repositories: {'http://github.com/user/repo': '##test'}},
+};
+
 // --- general webapp config ---
 
 exports.httpConfig = {
