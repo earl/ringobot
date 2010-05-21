@@ -55,6 +55,7 @@ function serverStarted(server) {
     bot.setVerbose(false);
     bot.setName(name);
     bot.setLogin('bot');
+    bot.setVersion('RingoBot');
     bot.setFinger('at your service!');
     bot.connect(server);
     bot.joinChannel(channel);
