@@ -1,10 +1,13 @@
-// earl, 2010-03-28
+export('serverStarted',
+       'serverStopped',
+       'getBot');
 
 addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
 
 require('core/date');
 require('core/json');
 var fs = require('fs');
+var config = require('./config');
 
 function LogBot(dir) {
 
@@ -38,8 +41,17 @@ function LogBot(dir) {
     return self;
 }
 
-function startBot(logdir, server, channel, name) {
-    var bot = new LogBot(logdir);
+var bot;
+
+function getBot() bot;
+
+function serverStarted(server) {
+    var {logDir, botConfig} = config;
+    var {server, channel, name} = botConfig;
+
+    fs.makeTree(logDir);
+
+    bot = new LogBot(logDir);
     bot.setVerbose(false);
     bot.setName(name);
     bot.setLogin('bot');
@@ -48,13 +60,7 @@ function startBot(logdir, server, channel, name) {
     bot.joinChannel(channel);
 }
 
-function main(args) {
-    var [_, logdir, server, channel, name] = args;
-    fs.makeTree(logdir);
-    startBot(logdir, server, channel, name);
-}
-
-if (require.main == module) {
-    require('system');
-    main(system.args);
+function serverStopped(server) {
+    bot.disconnect();
+    bot = null;
 }
