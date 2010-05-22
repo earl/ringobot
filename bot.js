@@ -20,9 +20,6 @@ function LogBot(dir) {
     // --- implement PircBot ---
 
     var self = new JavaAdapter(org.jibble.pircbot.PircBot, {
-        onPrivateMessage: function(sender, login, hostname, message) {
-            this.append({type: 'private', sender: sender, message: message});
-        },
         onMessage: function(channel, sender, login, hostname, message) {
             this.append({type: 'message', sender: sender, message: message});
         },
