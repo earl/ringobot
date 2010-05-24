@@ -5,6 +5,9 @@
     p.utterance {
         margin: 0;
     }
+    span.is_action {
+        font-style: italic;
+    }
 </style>
 
 <% subskin content %>
@@ -16,10 +19,22 @@
 <% subskin record %>
 <p class="utterance">
     <span class="time">[<% record.datetime | substring 11 16 %>]</span>
+    <% if <% record.is_message %> render message_record %>
+    <% if <% record.is_action %> render action_record %>
+</p>
+
+<% subskin message_record %>
+<span class="is_message">
     <span class="sender">&lt;<% record.sender %>&gt;</span>
     <span class="message"><% record.message %></span>
+</span>
+
+<% subskin action_record %>
+<span class="is_action">
+    *
+    <span class="sender"><% record.sender %></span>
     <span class="action"><% record.action %></span>
-</p>
+</span>
 
 <% subskin menu %>
 <div class="navigation">

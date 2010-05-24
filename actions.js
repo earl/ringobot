@@ -27,7 +27,13 @@ function listDays()     fs.list(config.logDir).map(fileToDay).sort().reverse();
 
 function readDay(day) {
     try {
-        return fs.read(dayToPath(day)).trim().split('\n').map(JSON.parse);
+        return fs.read(dayToPath(day)).trim().split('\n').map(
+                function (line) {
+                    var rec = JSON.parse(line);
+                    var fld = "is_" + rec.type;
+                    rec[fld] = true;
+                    return rec;
+                });
     } catch (e if e.javaException instanceof java.io.FileNotFoundException) {
         return [];
     }
