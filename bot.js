@@ -7,11 +7,13 @@ addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
 require('core/date');
 require('core/json');
 var fs = require('fs');
+var scheduler = require('ringo/scheduler');
 var config = require('./config');
 
 var log = require('ringo/logging').getLogger(module.id);
 
 function LogBot(dir, server, channel, name) {
+    var RECONNECT_DELAY = 10000; // 10 seconds
 
     // --- private helpers --
 
@@ -34,14 +36,20 @@ function LogBot(dir, server, channel, name) {
         },
         onDisconnect: function () {
             log.info('Disconnected');
+            this.reconnectLater();
         },
 
         // A custom zero-argument connect method, which automatically joins the
         // channel, after connecting to the server.
         connect: function () {
             log.info('Connecting');
-            this.connect(server);
-            this.joinChannel(channel);
+            try {
+                this.connect(server);
+                this.joinChannel(channel);
+            } catch (e if e instanceof java.io.IOException) {
+                log.error(e);
+                this.reconnectLater();
+            }
         },
     });
 
@@ -50,6 +58,11 @@ function LogBot(dir, server, channel, name) {
     self.append = function (record) {
         record['datetime'] = isodatetime();
         fs.write(logname(), JSON.stringify(record) + '\n', {append: true});
+    };
+
+    self.reconnectLater = function () {
+        log.info('Scheduling reconnect');
+        scheduler.setTimeout(function () {self.connect()}, RECONNECT_DELAY);
     };
 
     self.setVerbose(false);
