@@ -9,6 +9,8 @@ require('core/json');
 var fs = require('fs');
 var config = require('./config');
 
+var log = require('ringo/logging').getLogger(module.id);
+
 function LogBot(dir, server, channel, name) {
 
     // --- private helpers --
@@ -25,6 +27,13 @@ function LogBot(dir, server, channel, name) {
         },
         onAction: function(sender, login, hostname, target, action) {
             this.append({type: 'action', sender: sender, action: action});
+        },
+
+        onConnect: function () {
+            log.info('Connected');
+        },
+        onDisconnect: function () {
+            log.info('Disconnected');
         },
 
         // A custom zero-argument connect method, which automatically joins the
