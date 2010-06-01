@@ -9,7 +9,7 @@ require('core/json');
 var fs = require('fs');
 var config = require('./config');
 
-function LogBot(dir) {
+function LogBot(dir, server, channel, name) {
 
     // --- private helpers --
 
@@ -26,6 +26,14 @@ function LogBot(dir) {
         onAction: function(sender, login, hostname, target, action) {
             this.append({type: 'action', sender: sender, action: action});
         },
+
+        // A custom zero-argument connect method, which automatically joins the
+        // channel, after connecting to the server.
+        connect: function () {
+            log.info('Connecting');
+            this.connect(server);
+            this.joinChannel(channel);
+        },
     });
 
     // --- public helpers ---
@@ -34,6 +42,13 @@ function LogBot(dir) {
         record['datetime'] = isodatetime();
         fs.write(logname(), JSON.stringify(record) + '\n', {append: true});
     };
+
+    self.setVerbose(false);
+    self.setName(name);
+    self.setAutoNickChange(true);
+    self.setLogin('bot');
+    self.setVersion('RingoBot');
+    self.setFinger('at your service!');
 
     return self;
 }
@@ -48,14 +63,8 @@ function serverStarted(server) {
 
     fs.makeTree(logDir);
 
-    bot = new LogBot(logDir);
-    bot.setVerbose(false);
-    bot.setName(name);
-    bot.setLogin('bot');
-    bot.setVersion('RingoBot');
-    bot.setFinger('at your service!');
-    bot.connect(server);
-    bot.joinChannel(channel);
+    bot = new LogBot(logDir, server, channel, name);
+    bot.connect();
 }
 
 function serverStopped(server) {
