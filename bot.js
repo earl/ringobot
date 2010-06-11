@@ -99,7 +99,6 @@ function serverStarted(server) {
             return false;
         },
         canSubscribe: function(client, channel) {
-            print(" * SUBSCRIBE", channel);
             return channel == "/irc";
         }
     }));
