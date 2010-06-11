@@ -4,7 +4,7 @@ exports.logDir = './db/bot/';
 
 exports.botConfig = {
     server: 'irc.freenode.net',
-    channel: '##test',
+    channel: '##hensotest',
     name: 'abbot',
 };
 
@@ -42,5 +42,7 @@ exports.charset = 'UTF-8';
 exports.contentType = 'text/html';
 
 exports.extensions = [
+    'ringo/cometd',
     './bot',
 ];
+

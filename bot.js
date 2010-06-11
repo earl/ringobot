@@ -9,6 +9,7 @@ require('core/json');
 var fs = require('fs');
 var scheduler = require('ringo/scheduler');
 var config = require('./config');
+var cometd = require('ringo/cometd');
 
 var log = require('ringo/logging').getLogger(module.id);
 
@@ -58,6 +59,7 @@ function LogBot(dir, server, channel, name) {
     self.append = function (record) {
         record['datetime'] = isodatetime();
         fs.write(logname(), JSON.stringify(record) + '\n', {append: true});
+        cometd.publish('/irc', null, record);
     };
 
     self.reconnectLater = function () {
@@ -84,6 +86,24 @@ function serverStarted(server) {
     var {server, channel, name} = botConfig;
 
     fs.makeTree(logDir);
+
+    cometd.createChannel("/irc");
+    cometd.getBayeux().setSecurityPolicy(new org.cometd.SecurityPolicy({
+        canCreate: function() {
+            return false;
+        },
+        canHandshake: function() {
+            return true;
+        },
+        canPublish: function() {
+            return false;
+        },
+        canSubscribe: function(client, channel) {
+            print(" * SUBSCRIBE", channel);
+            return channel == "/irc";
+        }
+    }));
+
 
     bot = new LogBot(logDir, server, channel, name);
     bot.connect();

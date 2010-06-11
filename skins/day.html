@@ -1,6 +1,55 @@
 <% extends skins/base.html %>
 
 <% subskin head %>
+<script type="text/javascript" src="/static/org/cometd.js"></script>
+<script type="text/javascript" src="/static/jquery/jquery-1.3.2.js"></script>
+<script type="text/javascript" src="/static/jquery/jquery.json-2.2.js"></script>
+<script type="text/javascript" src="/static/jquery/jquery.cometd.js"></script>
+<script type="text/javascript">
+
+$(document).ready(function() {
+
+    var connected, subscription;
+
+    function receive(msg) {
+        var atBottom = $(document).height() - $(window).scrollTop() == $(window).height();
+        // FIXME we want ringo skins on the client
+        var p = '<p class="utterance">\
+            <span class="time">[' + msg.data.datetime.substring(11, 16) + ']</span>\
+            <span class="is_message">\
+               <span class="sender">&lt;' + msg.data.sender + '&gt;</span>\
+               <span class="message">' + msg.data.message + '</span>\
+            </span></p>';
+        var elem = $('div#content').append(p);
+        // scroll to new element if we're at the bottom of the page
+        if (atBottom) {
+            $('html, body').animate({scrollTop: $(window).scrollTop() + 50});
+        }
+    }
+
+    $.cometd.configure({
+        url: location.protocol + "//" + location.host + "/cometd",
+        logLevel: 'warn'
+    });
+
+    $.cometd.addListener('/meta/connect', function(msg) {
+        if (!connected && msg.successful) {
+            connected = true;
+            $.cometd.batch(function() {
+                /* if (subscription) {
+                    $.cometd.unsubscribe('/irc');
+                } */
+                subscription = $.cometd.subscribe('/irc', receive);
+            });
+        } else if (!msg.successful) {
+            connected = false;
+        }
+    });
+
+    $.cometd.handshake();
+});
+
+</script>
 <style type="text/css">
     p.utterance {
         margin: 0;
