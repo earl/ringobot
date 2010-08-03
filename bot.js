@@ -4,11 +4,10 @@ export('serverStarted',
 
 addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
 
-require('core/date');
-require('core/json');
+var config = require('./config');
 var fs = require('fs');
 var scheduler = require('ringo/scheduler');
-var config = require('./config');
+var {format: formatDate} = require('ringo/utils/date');
 
 var log = require('ringo/logging').getLogger(module.id);
 
@@ -17,8 +16,8 @@ function LogBot(dir, server, channel, name) {
 
     // --- private helpers --
 
-    function isodate()      (new Date()).format('yyyy-MM-dd');
-    function isodatetime()  (new Date()).format('yyyy-MM-dd HH:mm:ss');
+    function isodate()      formatDate(new Date(), 'yyyy-MM-dd');
+    function isodatetime()  formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss');
     function logname()      fs.join(dir, isodate() + '.log');
 
     // --- implement PircBot ---

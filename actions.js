@@ -1,11 +1,10 @@
 export('index',
        'showDay');
 
-require('core/date');
-require('core/json');
-var fs = require('fs');
-include('ringo/webapp/response');
 var config = require('./config');
+var fs = require('fs');
+var {format: formatDate} = require('ringo/utils/date');
+var {skinResponse} = require('ringo/webapp/response');
 
 function index(req) {
     return showDay(req, today());
@@ -20,7 +19,7 @@ function showDay(req, day) {
 
 // -- helpers --
 
-function today()        (new Date()).format('yyyy-MM-dd');
+function today()        formatDate(new Date(), 'yyyy-MM-dd');
 function fileToDay(log) log.slice(0, 10);
 function dayToPath(day) fs.join(config.logDir, day + '.log');
 function listDays()     fs.list(config.logDir).map(fileToDay).sort().reverse();
