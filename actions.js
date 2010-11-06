@@ -4,7 +4,7 @@ export('index',
 var config = require('./config');
 var fs = require('fs');
 var dates = require('ringo/utils/dates');
-var {skinResponse} = require('ringo/webapp/response');
+var {Response} = require('ringo/webapp/response');
 
 function index(req) {
     return showDay(req, today());
@@ -12,9 +12,8 @@ function index(req) {
 
 function showDay(req, day) {
     // day is expected to be sanitized by url routing pattern in config
-    return skinResponse('./skins/day.html', {day: day,
-                                             records: readDay(day),
-                                             days: listDays(),});
+    return Response.skin(module.resolve('./skins/day.html'),
+                         {day: day, records: readDay(day), days: listDays(),});
 }
 
 // -- helpers --
