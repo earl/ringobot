@@ -1,6 +1,6 @@
 var {html4, html, css} = require("static/hiccup");
 
-exports.page = function(day, records) {
+exports.page = function(day, records, days) {
     return html4(
       ["head",
         ["title", "RingoBot IRC Logs"],
@@ -16,12 +16,14 @@ exports.page = function(day, records) {
                 "span.is_action", {fontStyle: "italic"})]
       ],
       ["body",
-        ["p", "Logs for the ",
-          ["a", {href: "irc://irc.freenode.net/ringojs"}, "RingoJS IRC channel"],
-          ", as logged by ",
-          ["a", {href: "http://github.com/earl/ringobot"}, ["code", "ringostarr"]]],
-        ["h1", day],
-          ["div#content", records.map(record)]]);
+        ["div#content",
+          ["p", "Logs for the ",
+            ["a", {href: "irc://irc.freenode.net/ringojs"}, "RingoJS IRC channel"],
+            ", as logged by ",
+            ["a", {href: "http://github.com/earl/ringobot"}, ["code", "ringostarr"]]],
+          ["h1", day],
+          records.map(record)],
+        ["div#menu", menu(days)]]);
 };
 
 var record = exports.record = function(r) {
@@ -36,3 +38,13 @@ var record = exports.record = function(r) {
             ["span.sender", " ", r.sender, " "],
             ["span.action", r.action]]);
 };
+
+var menu = exports.menu = function(days) {
+    return html(
+      "div.navigation",
+        ["h3", "Log Archive"],
+        ["ul", days.map(function(day) {
+            return ["li", ["a", {href: day}, day]];
+        })]
+    );
+}
