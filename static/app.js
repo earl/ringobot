@@ -17,7 +17,7 @@ $(document).ready(function() {
 
     function receive(msg) {
         var atBottom = $(document).height() - $(window).scrollTop() == $(window).height();
-        $('div#content').append(record(msg.data));
+        $('div#main').append(record(msg.data));
         // scroll to new element if we're at the bottom of the page
         if (atBottom) {
             $('html, body').animate({scrollTop: $(window).scrollTop() + 50});

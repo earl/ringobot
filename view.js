@@ -1,4 +1,4 @@
-var {html4, html, css} = require("static/hiccup");
+var {html4, html, css} = require("./static/hiccup");
 
 var scripts = [
     "/static/org/cometd.js",
@@ -22,7 +22,7 @@ exports.page = function(day, records, days) {
                 "span.is_action", {fontStyle: "italic"})]
       ],
       ["body",
-        ["div#content",
+        ["div#main",
           ["p", "Logs for the ",
             ["a", {href: "irc://irc.freenode.net/ringojs"}, "RingoJS IRC channel"],
             ", as logged by ",

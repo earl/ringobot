@@ -13,7 +13,7 @@ function index(req) {
 
 function showDay(req, day) {
     // day is expected to be sanitized by url routing pattern in config
-    /* return Response.skin(module.resolve('./skins/day.html'), {
+    return Response.skin(module.resolve('./skins/day.html'), {
         day: day,
         records: function() {
             return readDay(day).map(view.record);
@@ -21,8 +21,8 @@ function showDay(req, day) {
         days: function() {
             return view.menu(listDays());
         }
-    }); */
-    return Response(view.page(day, readDay(day), listDays()));
+    });
+    // return Response(view.page(day, readDay(day), listDays()));
 }
 
 // -- helpers --
