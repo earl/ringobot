@@ -37,6 +37,7 @@ function readDay(day) {
         return fs.read(dayToPath(day)).trim().split('\n').map(
                 function (line) {
                     var rec = JSON.parse(line);
+                    rec[rec.type] = linkify(rec[rec.type]);
                     var fld = "is_" + rec.type;
                     rec[fld] = true;
                     return rec;
@@ -44,4 +45,18 @@ function readDay(day) {
     } catch (e if e.javaException instanceof java.io.FileNotFoundException) {
         return [];
     }
+}
+
+function linkify(text) {
+    if (!text) return "";
+    return text.replace(
+        /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
+        function(url) {
+            var fullUrl = url;
+            if (!fullUrl.match('^https?:\/\/')) {
+                fullUrl = 'http://' + fullUrl;
+            }
+            return '<a href="' + fullUrl + '">' + url + '</a>';
+        }
+    );
 }

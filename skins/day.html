@@ -19,10 +19,10 @@ $(document).ready(function() {
             r.type === "message" ?
               ["span.is_message",
                 ["span.sender", " &lt;", r.sender, "&gt; "],
-                ["span.message", r.message]] :
+                ["span.message", linkify(r.message)]] :
               ["span.is_action", " * ",
                 ["span.sender", " ", r.sender, " "],
-                ["span.action", r.action]]);
+                ["span.action", linkify(r.action)]]);
     }
 
     function receive(msg) {
@@ -54,6 +54,20 @@ $(document).ready(function() {
     });
 
     $.cometd.handshake();
+
+    function linkify(text) {
+        if (!text) return "";
+        return text.replace(
+            /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
+            function(url) {
+                var fullUrl = url;
+                if (!fullUrl.match('^https?:\/\/')) {
+                    fullUrl = 'http://' + fullUrl;
+                }
+                return '<a href="' + fullUrl + '">' + url + '</a>';
+            }
+        );
+    }
 });
 
 </script>
