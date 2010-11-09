@@ -4,8 +4,8 @@ exports.logDir = './db/bot/';
 
 exports.botConfig = {
     server: 'irc.freenode.net',
-    channel: '##hensotest',
-    name: 'abbot',
+    channel: '#ringojs',
+    name: 'ringostarr',
 };
 
 exports.webhookConfig = {
