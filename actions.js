@@ -14,6 +14,7 @@ function index(req) {
 function showDay(req, day) {
     // day is expected to be sanitized by url routing pattern in config
     return Response.skin(module.resolve('./skins/day.html'), {
+        title: "IRC Log",
         day: day,
         records: function() {
             return readDay(day).map(view.record);
