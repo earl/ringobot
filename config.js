@@ -1,6 +1,6 @@
 // --- app-specific config ---
 
-exports.logDir = './db/bot/';
+exports.logDir = '/var/lib/ringojs/db/bot/';
 
 exports.botConfig = {
     server: 'irc.freenode.net',
