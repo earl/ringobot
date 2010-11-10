@@ -9,7 +9,7 @@ exports.botConfig = {
 };
 
 exports.webhookConfig = {
-    github: {repositories: {'http://github.com/user/repo': '##test'}},
+    github: {repositories: {'https://github.com/user/repo': '##test'}},
 };
 
 // --- general webapp config ---
