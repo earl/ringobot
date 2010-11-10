@@ -6,7 +6,7 @@ var fs = require('fs');
 var dates = require('ringo/utils/dates');
 var {Response} = require('ringo/webapp/response');
 var view = require('./view');
-var utils = require('./static/utils');
+var utils = require('./shared/utils');
 
 function index(req) {
     return showDay(req, today());

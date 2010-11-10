@@ -1,11 +1,10 @@
-var {html4, html, css} = require("./static/hiccup");
+var {html4, html, css} = require("./shared/hiccup");
 
 var scripts = [
     "/static/org/cometd.js",
     "/static/jquery/jquery-1.3.2.js",
     "/static/jquery/jquery.json-2.2.js",
     "/static/jquery/jquery.cometd.js",
-    "/static/hiccup.js",
     "/static/app.js"
 ].map(function(script) {
     return ["script", {type:"text/javascript", src: script}];
