@@ -6,6 +6,7 @@
 <script type="text/javascript" src="<% href /static/jquery/jquery.json-2.2.js %>"></script>
 <script type="text/javascript" src="<% href /static/jquery/jquery.cometd.js %>"></script>
 <script type="text/javascript" src="<% href /static/hiccup.js %>"></script>
+<script type="text/javascript" src="<% href /static/utils.js %>"></script>
 <script type="text/javascript">
 
 $(document).ready(function() {
@@ -19,10 +20,10 @@ $(document).ready(function() {
             r.type === "message" ?
               ["span.is_message",
                 ["span.sender", " &lt;", r.sender, "&gt; "],
-                ["span.message", linkify(r.message)]] :
+                ["span.message", utils.formatMessage(r.message)]] :
               ["span.is_action", " * ",
                 ["span.sender", " ", r.sender, " "],
-                ["span.action", linkify(r.action)]]);
+                ["span.action", utils.formatMessage(r.action)]]);
     }
 
     function receive(msg) {
@@ -55,19 +56,6 @@ $(document).ready(function() {
 
     $.cometd.handshake();
 
-    function linkify(text) {
-        if (!text) return "";
-        return text.replace(
-            /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
-            function(url) {
-                var fullUrl = url;
-                if (!fullUrl.match('^https?:\/\/')) {
-                    fullUrl = 'http://' + fullUrl;
-                }
-                return '<a href="' + fullUrl + '">' + url + '</a>';
-            }
-        );
-    }
 });
 
 </script>

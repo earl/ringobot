@@ -6,6 +6,7 @@ var fs = require('fs');
 var dates = require('ringo/utils/dates');
 var {Response} = require('ringo/webapp/response');
 var view = require('./view');
+var utils = require('./static/utils');
 
 function index(req) {
     return showDay(req, today());
@@ -38,7 +39,7 @@ function readDay(day) {
         return fs.read(dayToPath(day)).trim().split('\n').map(
                 function (line) {
                     var rec = JSON.parse(line);
-                    rec[rec.type] = linkify(rec[rec.type]);
+                    rec[rec.type] = utils.formatMessage(rec[rec.type]);
                     var fld = "is_" + rec.type;
                     rec[fld] = true;
                     return rec;
@@ -46,18 +47,4 @@ function readDay(day) {
     } catch (e if e.javaException instanceof java.io.FileNotFoundException) {
         return [];
     }
-}
-
-function linkify(text) {
-    if (!text) return "";
-    return text.replace(
-        /((https?\:\/\/)|(www\.))(\S+)(\w{2,4})(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/gi,
-        function(url) {
-            var fullUrl = url;
-            if (!fullUrl.match('^https?:\/\/')) {
-                fullUrl = 'http://' + fullUrl;
-            }
-            return '<a href="' + fullUrl + '">' + url + '</a>';
-        }
-    );
 }
