@@ -5,44 +5,30 @@ exports.logDir = '/var/lib/ringojs/db/bot/';
 exports.botConfig = {
     server: 'irc.freenode.net',
     channel: '#ringojs',
-    name: 'ringostarr',
+    name: 'ringostarr'
 };
 
 exports.webhookConfig = {
     github: {repositories: {'https://github.com/ringo/ringojs': '#ringojs'}},
 };
 
+exports.start = function(server) {
+    require("ringo-cometd").start(server);
+    require("./bot").start(server);
+}
+
+exports.stop = function(server) {
+    require("./bot").stop(server);
+    require("ringo-cometd").stop(server);
+}
+
 // --- general webapp config ---
 
-exports.httpConfig = {
-    staticDir: 'static'
-};
+var {Application} = require("stick");
+var app = exports.app = Application();
+app.configure("static", "mount", "notfound");
+app.static(module.resolve("public"));
+app.mount("/webhook", module.resolve("webhooks"));
+app.mount("", module.resolve("actions"));
 
-exports.urls = [
-    ['/webhook/', './webhooks'],
-    ['/(\\d\\d\\d\\d-\\d\\d-\\d\\d)', './actions', 'showDay'],
-    ['/', './actions'],
-];
-
-exports.middleware = [
-    'ringo/middleware/etag',
-    'ringo/middleware/responselog',
-    'ringo/middleware/error',
-    'ringo/middleware/notfound',
-];
-
-exports.app = require('ringo/webapp').handleRequest;
-
-exports.macros = [
-    'ringo/skin/macros',
-    'ringo/skin/filters',
-];
-
-exports.charset = 'UTF-8';
-exports.contentType = 'text/html';
-
-exports.extensions = [
-    'ringo/cometd',
-    './bot',
-];
 

@@ -1,5 +1,5 @@
-export('serverStarted',
-       'serverStopped',
+export('start',
+       'stop',
        'getBot');
 
 addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
@@ -8,7 +8,7 @@ var config = require('./config');
 var fs = require('fs');
 var scheduler = require('ringo/scheduler');
 var config = require('./config');
-var cometd = require('ringo/cometd');
+var cometd = require('ringo-cometd');
 var dates = require('ringo/utils/dates');
 
 var log = require('ringo/logging').getLogger(module.id);
@@ -81,7 +81,7 @@ var bot;
 
 function getBot() bot;
 
-function serverStarted(server) {
+function start(server) {
     var {logDir, botConfig} = config;
     var {server, channel, name} = botConfig;
 
@@ -108,7 +108,7 @@ function serverStarted(server) {
     bot.connect();
 }
 
-function serverStopped(server) {
+function stop(server) {
     bot.disconnect();
     bot = null;
 }

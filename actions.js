@@ -1,20 +1,21 @@
-export('index',
-       'showDay');
-
 var config = require('./config');
 var fs = require('fs');
 var dates = require('ringo/utils/dates');
-var {Response} = require('ringo/webapp/response');
+var {response} = require('ringo/jsgi/response');
 var view = require('./view');
 var utils = require('./shared/utils');
+var {Application} = require('stick');
 
-function index(req) {
-    return showDay(req, today());
+var app = exports.app = Application();
+app.configure('route', 'render');
+app.render.base = module.resolve('templates');
+app.render.master = 'base.html';
+app.render.helpers = {
+    baseUrl: function() app.base
 }
 
 function showDay(req, day) {
-    // day is expected to be sanitized by url routing pattern in config
-    return Response.skin(module.resolve('./skins/day.html'), {
+    var context = {
         title: "IRC Log",
         day: day,
         records: function() {
@@ -22,10 +23,22 @@ function showDay(req, day) {
         },
         days: function() {
             return view.menu(listDays());
+        },
+        head: function() {
+            return app.renderPart("head.html", context);
+        },
+        menu: function() {
+            return app.renderPart("menu.html", context);
         }
-    });
-    // return Response(view.page(day, readDay(day), listDays()));
+    };
+    return app.render('day.html', context);
 }
+
+app.get('/:day', showDay);
+
+app.get('/', function(req) {
+    return showDay(req, today());
+});
 
 // -- helpers --
 
