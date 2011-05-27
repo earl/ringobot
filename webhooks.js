@@ -1,9 +1,9 @@
 export('app');
 
-var {botConfig, webhookConfig} = require('./config');
-var bot = require('./bot').getBot();
+var {botConfig, webhookConfig} = require('./main');
 
 function app(req) {
+    var bot = require('./bot').getBot();
     var {repositories} = webhookConfig.github;
     try {
         var {repository, commits} = JSON.parse(req.params.payload);

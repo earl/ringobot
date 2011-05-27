@@ -4,10 +4,9 @@ export('start',
 
 addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
 
-var config = require('./config');
+var main = require('./main');
 var fs = require('fs');
 var scheduler = require('ringo/scheduler');
-var config = require('./config');
 var cometd = require('ringo-cometd');
 var dates = require('ringo/utils/dates');
 
@@ -82,7 +81,7 @@ var bot;
 function getBot() bot;
 
 function start(server) {
-    var {logDir, botConfig} = config;
+    var {logDir, botConfig} = main;
     var {server, channel, name} = botConfig;
 
     fs.makeTree(logDir);

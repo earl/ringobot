@@ -1,4 +1,4 @@
-var config = require('./config');
+var main = require('./main');
 var fs = require('fs');
 var dates = require('ringo/utils/dates');
 var {response} = require('ringo/jsgi/response');
@@ -44,8 +44,8 @@ app.get('/', function(req) {
 
 function today()        dates.format(new Date(), 'yyyy-MM-dd');
 function fileToDay(log) log.slice(0, 10);
-function dayToPath(day) fs.join(config.logDir, day + '.log');
-function listDays()     fs.list(config.logDir).map(fileToDay).sort().reverse();
+function dayToPath(day) fs.join(main.logDir, day + '.log');
+function listDays()     fs.list(main.logDir).map(fileToDay).sort().reverse();
 
 function readDay(day) {
     try {
