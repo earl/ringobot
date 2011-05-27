@@ -76,7 +76,8 @@ function LogBot(dir, server, channel, name) {
     return self;
 }
 
-var bot;
+// Use module.singleton() to preserve bot across reloads
+var bot = module.singleton("bot");
 
 function getBot() bot;
 
@@ -102,8 +103,10 @@ function start(server) {
         }
     }));
 
-
-    bot = new LogBot(logDir, server, channel, name);
+    // Use module.singleton() to register bot for reloads
+    bot = module.singleton("bot", function() {
+        return new LogBot(logDir, server, channel, name);
+    });
     bot.connect();
 }
 
