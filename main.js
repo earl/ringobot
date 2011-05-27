@@ -28,7 +28,7 @@ exports.stop = function(server) {
 
 var {Application} = require("stick");
 var app = exports.app = Application();
-app.configure("static", "mount", "notfound");
+app.configure("static", "params", "mount", "notfound");
 app.static(module.resolve("public"));
 app.mount("/webhook", module.resolve("webhooks"));
 app.mount("", module.resolve("actions"));
