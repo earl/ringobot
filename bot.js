@@ -6,7 +6,6 @@ addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
 
 var main = require('./main');
 var fs = require('fs');
-var scheduler = require('ringo/scheduler');
 var cometd = require('ringo-cometd');
 var dates = require('ringo/utils/dates');
 
@@ -63,7 +62,7 @@ function LogBot(dir, server, channel, name) {
 
     self.reconnectLater = function () {
         log.info('Scheduling reconnect');
-        scheduler.setTimeout(function () {self.connect()}, RECONNECT_DELAY);
+        setTimeout(function () {self.connect()}, RECONNECT_DELAY);
     };
 
     self.setVerbose(false);
