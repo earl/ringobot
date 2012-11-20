@@ -1,0 +1,22 @@
+{
+    "name": "ringobot",
+    "version": "0.1",
+    "description": "A minimal PircBot-based IRC logging bot",
+    "keywords": ["irc", "logging"],
+    "homepage": "https://github.com/earl/ringobot",
+    "maintainers": [],
+    "contributors": [
+        {
+           "name": "Andreas Bolka"
+        }
+    ],
+    "dependencies": {},
+    "repositories": [{
+        "type": "git",
+        "url": "https://github.com/earl/ringobot.git"
+    }],
+    "engines": {
+        "ringojs": ">= 0.8"
+    },
+    "main": "./main.js"
+}

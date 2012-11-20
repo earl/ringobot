@@ -1,12 +1,12 @@
-export('serverStarted',
-       'serverStopped',
+export('start',
+       'stop',
        'getBot');
 
 addToClasspath(getResource('./jars/pircbot-1.5.0.jar').path);
 
-var config = require('./config');
+var main = require('./main');
 var fs = require('fs');
-var scheduler = require('ringo/scheduler');
+var cometd = require('ringo-cometd');
 var dates = require('ringo/utils/dates');
 
 var log = require('ringo/logging').getLogger(module.id);
@@ -57,11 +57,12 @@ function LogBot(dir, server, channel, name) {
     self.append = function (record) {
         record['datetime'] = isodatetime();
         fs.write(logname(), JSON.stringify(record) + '\n', {append: true});
+        cometd.publish('/irc', null, record);
     };
 
     self.reconnectLater = function () {
         log.info('Scheduling reconnect');
-        scheduler.setTimeout(function () {self.connect()}, RECONNECT_DELAY);
+        setTimeout(function () {self.connect()}, RECONNECT_DELAY);
     };
 
     self.setVerbose(false);
@@ -74,21 +75,42 @@ function LogBot(dir, server, channel, name) {
     return self;
 }
 
-var bot;
+// Use module.singleton() to preserve bot across reloads
+var bot = module.singleton("bot");
 
 function getBot() bot;
 
-function serverStarted(server) {
-    var {logDir, botConfig} = config;
+function start(server) {
+    var {logDir, botConfig} = main;
     var {server, channel, name} = botConfig;
 
     fs.makeTree(logDir);
 
-    bot = new LogBot(logDir, server, channel, name);
+    cometd.createChannel("/irc");
+    cometd.getBayeux().setSecurityPolicy(new org.cometd.SecurityPolicy({
+        canCreate: function() {
+            return false;
+        },
+        canHandshake: function() {
+            return true;
+        },
+        canPublish: function() {
+            return false;
+        },
+        canSubscribe: function(client, channel) {
+            return channel == "/irc";
+        }
+    }));
+
+    // Use module.singleton() to register bot for reloads
+    bot = module.singleton("bot", function() {
+        return new LogBot(logDir, server, channel, name);
+    });
     bot.connect();
 }
 
-function serverStopped(server) {
+function stop(server) {
     bot.disconnect();
     bot = null;
 }
+
